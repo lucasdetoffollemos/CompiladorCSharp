@@ -30,7 +30,7 @@ namespace Compilador.Dominio
 
         public List<GeradorItemsLexicos> Analisador()
         {
-            string codigo = "int x ";
+            string codigo = "public static void main(string[] args){int x;}";
             codigo = AdicionaEspacoNoFinalCasoNecessario(codigo);
             string lexema = "";
 
@@ -105,9 +105,40 @@ namespace Compilador.Dominio
 
         private void AdicionaNaTabelaDeId(string lexema, int contadorTabelaSimbolos, List<GeradorItemsLexicos> lexemaTokenSimbolo)
         {
+            //Dictionary<int, string> tabelaDeSimbolos = new Dictionary<int, string>();
+
+            //KeyValuePair<int, string> identificador = new KeyValuePair<int, string>();
+
+            ////se o value for igual ao lexema retorna o item do dicionario e passa o value no lexema e a key no contador
+            //if (tabelaDeSimbolos.ContainsValue(lexema))
+            //{
+                
+            //}
+
+            ////caso contrario adiciona o lexema no value e a key no contador
+            //else
+            //{
+            //    tabelaDeSimbolos.Add(contadorTabelaSimbolos, lexema);                
+            //}
+
             GeradorItemsLexicos novoItem = new GeradorItemsLexicos(lexema, $"ID, {contadorTabelaSimbolos}", "identificador");
             lexemaTokenSimbolo.Add(novoItem);
+
+
+
+
         }
+
+        //private void AdicionarIdTabelaSimbolos(Dictionary<int, string> tabelaDeSimbolos)
+        //{
+        //    int contador
+        //    string lexema
+
+        //    for (int i = 0; i < tabelaDeSimbolos.Count; i++)
+        //    {
+        //        if (tabelaDeSimbolos.Values
+        //    }
+        //}
 
         private static string VerificarSimboloEspecial(string lexema)
         {
