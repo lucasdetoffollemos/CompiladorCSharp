@@ -30,8 +30,8 @@ namespace Compilador.Dominio
 
         public List<GeradorItemsLexicos> Analisador()
         {
-            string codigo = "({(int({[}]);;";
-
+            string codigo = "int x ";
+            codigo = AdicionaEspacoNoFinalCasoNecessario(codigo);
             string lexema = "";
 
             List<GeradorItemsLexicos> lexemaTokenSimbolo = new List<GeradorItemsLexicos>();
@@ -47,7 +47,6 @@ namespace Compilador.Dominio
                 }
                 else
                 {
-
 
                     //adicionar no token
                     string token = VerificarPalavraReservada(lexema);
@@ -91,6 +90,17 @@ namespace Compilador.Dominio
             return lexemaTokenSimbolo;
 
            
+        }
+
+        private string AdicionaEspacoNoFinalCasoNecessario(string codigo)
+        {
+
+            if(codigo[codigo.Length-1] != ' ')
+            {
+                codigo += " ";
+            }
+
+            return codigo;
         }
 
         private void AdicionaNaTabelaDeId(string lexema, int contadorTabelaSimbolos, List<GeradorItemsLexicos> lexemaTokenSimbolo)
