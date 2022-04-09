@@ -30,7 +30,7 @@ namespace Compilador.Dominio
 
         public List<GeradorItemsLexicos> Analisador()
         {
-            string codigo = "public static void main(String[] args) {int x;}";
+            string codigo = "({(int({[}]);;";
 
             string lexema = "";
 
@@ -47,15 +47,7 @@ namespace Compilador.Dominio
                 }
                 else
                 {
-                    
-                    //adicionar no simbolo especial
-                    string simbolo = VerificarSimboloEspecial(codigo[i].ToString());
-                    if (simbolo != null)
-                    {
-                        GeradorItemsLexicos novoItem = new GeradorItemsLexicos(simbolo, simbolo, "símbolo especial");
-                        lexemaTokenSimbolo.Add(novoItem);
 
-                    }
 
                     //adicionar no token
                     string token = VerificarPalavraReservada(lexema);
@@ -64,14 +56,32 @@ namespace Compilador.Dominio
                         GeradorItemsLexicos novoItem = new GeradorItemsLexicos(lexema, token, "palavra reservada");
                         lexemaTokenSimbolo.Add(novoItem);
                         lexema = "";
-                        continue;
+                        //continue;
                     }
 
-                    if ((lexema != "") && (lexema != simbolo) )
+
+                    string simbolo = VerificarSimboloEspecial(codigo[i].ToString());
+
+                    
+                    //adciona identificador
+                    if ((lexema != "") && (lexema != simbolo))
                     {
                         AdicionaNaTabelaDeId(lexema, contadorTabelaSimbolos, lexemaTokenSimbolo);
                         contadorTabelaSimbolos++;
                     }
+
+
+
+                    //adicionar no simbolo especial
+                    if (simbolo != null)
+                    {
+                        GeradorItemsLexicos novoItem = new GeradorItemsLexicos(simbolo, simbolo, "símbolo especial");
+                        lexemaTokenSimbolo.Add(novoItem);
+
+                    }
+
+
+                    
                     
 
                     lexema = "";
