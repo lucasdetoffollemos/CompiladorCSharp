@@ -41,7 +41,7 @@ namespace Compilador.Dominio
 
         public List<GeradorItemsLexicos> Analisador()
         {
-            string codigo = "public static void main(string[] args){int x21esx, y, x, v,x, y 1}";
+            string codigo = "public static void main(string[] args){int x21esx1, y, x, v,x, y 1.9 90}";
             codigo = AdicionaEspacoNoFinalCasoNecessario(codigo);
             string lexema = "";
 
@@ -81,6 +81,21 @@ namespace Compilador.Dominio
                         {
                             AdicionaNaTabelaDeSimbolos(lexema, ref contadorTabelaSimbolos, lexemaTokenSimbolo);
                         }
+                    }
+
+
+                    ////adiciona numero double 
+                    //if (regexInt.IsMatch(lexema))
+                    //{
+                    //    GeradorItemsLexicos novoItem = new GeradorItemsLexicos(lexema, "NUM_DEC, " + lexema, "Numero decimal");
+                    //    lexemaTokenSimbolo.Add(novoItem);
+                    //}
+
+                    //adiciona numero inteiro 
+                    if (regexInt.IsMatch(lexema))
+                    {
+                        GeradorItemsLexicos novoItem = new GeradorItemsLexicos(lexema, "NUM_INT, " + lexema, "Numero inteiro");
+                        lexemaTokenSimbolo.Add(novoItem);
                     }
 
                     //adicionar no simbolo especial
