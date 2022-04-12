@@ -2,12 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Compilador.Dominio
 {
     public class AnaliseLexica
     {
+        //DEFINIR EXPRESSÕES REGULARES
+
+        public static Regex regexInt = new Regex("^[0-9]+$");
+        public static Regex regexIds = new Regex("^[a-zA-Z_]([a-zA-Z_]|[0-9])*");
+        public static Regex regexDouble = new Regex(@"^[0-9]+\.[0-9]+");
+
+
 
         public static Dictionary<int, string> tabelaDeSimbolos = new Dictionary<int, string>();
 
@@ -33,7 +41,7 @@ namespace Compilador.Dominio
 
         public List<GeradorItemsLexicos> Analisador()
         {
-            string codigo = "public static void main(string[] args){int x, y, x, v,x, y}";
+            string codigo = "public static void main(string[] args){int x21esx, y, x, v,x, y 1}";
             codigo = AdicionaEspacoNoFinalCasoNecessario(codigo);
             string lexema = "";
 
@@ -47,6 +55,11 @@ namespace Compilador.Dominio
                 if (Char.IsLetter(codigo[i]))
                 {
                     lexema += codigo[i];
+                }
+                
+                else if (Char.IsDigit(codigo[i]))
+                {
+                    lexema+=codigo[i];
                 }
                 else
                 {
@@ -64,7 +77,10 @@ namespace Compilador.Dominio
                     //adciona identificador
                     if ((lexema != "") && (lexema != simbolo))
                     {
-                        AdicionaNaTabelaDeSimbolos(lexema, ref contadorTabelaSimbolos, lexemaTokenSimbolo);
+                        if (regexIds.IsMatch(lexema))
+                        {
+                            AdicionaNaTabelaDeSimbolos(lexema, ref contadorTabelaSimbolos, lexemaTokenSimbolo);
+                        }
                     }
 
                     //adicionar no simbolo especial
@@ -72,7 +88,6 @@ namespace Compilador.Dominio
                     {
                         GeradorItemsLexicos novoItem = new GeradorItemsLexicos(simbolo, simbolo, "símbolo especial");
                         lexemaTokenSimbolo.Add(novoItem);
-
                     }
 
                     lexema = "";
