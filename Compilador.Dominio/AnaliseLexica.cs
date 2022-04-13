@@ -9,11 +9,10 @@ namespace Compilador.Dominio
 {
     public class AnaliseLexica
     {
-        //DEFINIR EXPRESSÕES REGULARES
-
+        
         public static Regex regexInt = new Regex("^[0-9]+$");
-        public static Regex regexIds = new Regex("^[a-zA-Z_]([a-zA-Z_]|[0-9])*");
-        public static Regex regexDouble = new Regex(@"^[0-9]+\.[0-9]+");
+        public static Regex regexIds = new Regex("^[a-zA-Z_]([a-zA-Z_]|[0-9])*$");
+        public static Regex regexDouble = new Regex(@"^[0-9]+\.[0-9]+$");
 
 
 
@@ -41,7 +40,7 @@ namespace Compilador.Dominio
 
         public List<GeradorItemsLexicos> Analisador()
         {
-            string codigo = "public static void main(string[] args){int x21esx1, y, x, v,x, y 1.9 90}";
+            string codigo = "public static void main(string[] args){int x21esx1, y, x, v,x, y 90 12.34}"; 
             codigo = AdicionaEspacoNoFinalCasoNecessario(codigo);
             string lexema = "";
 
@@ -60,6 +59,10 @@ namespace Compilador.Dominio
                 else if (Char.IsDigit(codigo[i]))
                 {
                     lexema+=codigo[i];
+                }
+                else if (codigo[i] == '.')
+                {
+                    lexema += codigo[i];
                 }
                 else
                 {
@@ -84,12 +87,12 @@ namespace Compilador.Dominio
                     }
 
 
-                    ////adiciona numero double 
-                    //if (regexInt.IsMatch(lexema))
-                    //{
-                    //    GeradorItemsLexicos novoItem = new GeradorItemsLexicos(lexema, "NUM_DEC, " + lexema, "Numero decimal");
-                    //    lexemaTokenSimbolo.Add(novoItem);
-                    //}
+                    //adiciona numero double 
+                    if (regexDouble.IsMatch(lexema))
+                    {
+                        GeradorItemsLexicos novoItem = new GeradorItemsLexicos(lexema, "NUM_DEC, " + lexema, "Numero decimal");
+                        lexemaTokenSimbolo.Add(novoItem);
+                    }
 
                     //adiciona numero inteiro 
                     if (regexInt.IsMatch(lexema))
@@ -122,7 +125,7 @@ namespace Compilador.Dominio
             return codigo;
         }
 
-        private void AdicionaNaTabelaDeSimbolos(string lexema, ref  int contadorTabelaSimbolos, List<GeradorItemsLexicos> lexemaTokenSimbolo)
+        private void AdicionaNaTabelaDeSimbolos(string lexema, ref int contadorTabelaSimbolos, List<GeradorItemsLexicos> lexemaTokenSimbolo)
         {
             int key = 0;
             string value = "";
