@@ -14,7 +14,7 @@ namespace Compilador.Dominio
         public static Regex regexIds = new Regex("^[a-zA-Z_]([a-zA-Z_]|[0-9])*$");
         public static Regex regexDouble = new Regex(@"^[0-9]+\.[0-9]+$");
 
-
+        public static char operadorAtribuicao = '=';
 
         public static Dictionary<int, string> tabelaDeSimbolos = new Dictionary<int, string>();
 
@@ -37,10 +37,14 @@ namespace Compilador.Dominio
 
         public static List<string> simbolosEspeciais = new List<string>() { "(", ")", "{", "}", "[", "]", ",", ";" };
 
+        public static List<string> operadoresAritmeticos = new List<string>() { "+", "-", "*", "/", "%"};
+
+        public static List<string> operadoresLogicos = new List<string>() {"&&", "||", "!"};
+
 
         public List<GeradorItemsLexicos> Analisador()
         {
-            string codigo = "public static void main(string[] args){int x21esx1, y, x, v,x, y 90 12.34}"; 
+            string codigo = " && "; 
             codigo = AdicionaEspacoNoFinalCasoNecessario(codigo);
             string lexema = "";
 
@@ -61,6 +65,10 @@ namespace Compilador.Dominio
                     lexema+=codigo[i];
                 }
                 else if (codigo[i] == '.')
+                {
+                    lexema += codigo[i];
+                }
+                else if (operadoresLogicos.Contains(codigo[i].ToString()))
                 {
                     lexema += codigo[i];
                 }
@@ -108,11 +116,59 @@ namespace Compilador.Dominio
                         lexemaTokenSimbolo.Add(novoItem);
                     }
 
+                    string operadorLogico = VerificarOperadorLogico(lexema);
+                    if (lexema.Equals(operadorLogico))
+                    {
+                        GeradorItemsLexicos novoItem = new GeradorItemsLexicos(lexema, lexema, "Operador Lógico");
+                        lexemaTokenSimbolo.Add(novoItem);
+                    }
+
+
+                    if (codigo[i] == operadorAtribuicao)
+                    {
+                        GeradorItemsLexicos novoItem = new GeradorItemsLexicos(operadorAtribuicao.ToString(), operadorAtribuicao.ToString(), "Operador de Atribuição");
+                        lexemaTokenSimbolo.Add(novoItem);
+                    }
+
+                    string operadorAritimetico = VerificarOperadorAritimetico(codigo[i].ToString());
+
+                    if (codigo[i].ToString() == operadorAritimetico)
+                    {
+                        GeradorItemsLexicos novoItem = new GeradorItemsLexicos(codigo[i].ToString(), codigo[i].ToString(), "Operador Aritmético");
+                        lexemaTokenSimbolo.Add(novoItem);
+                    }
+
                     lexema = "";
                 }
             }
 
             return lexemaTokenSimbolo;
+        }
+
+        private string VerificarOperadorLogico(string operador)
+        {
+            foreach (var op in operadoresLogicos)
+            {
+                if (op.Equals(operador))
+                {
+                    return operador;
+                }
+            }
+
+            return null;
+        }
+
+        private string VerificarOperadorAritimetico(string opereador)
+        {
+            foreach (var op in operadoresAritmeticos)
+            {
+                if (op.Equals(opereador))
+                {
+                    return opereador;
+                }
+            }
+
+            return null;
         }
 
         private string AdicionaEspacoNoFinalCasoNecessario(string codigo)
