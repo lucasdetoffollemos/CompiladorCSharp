@@ -44,7 +44,8 @@ namespace Compilador.Dominio
 
         public List<GeradorItemsLexicos> Analisador()
         {
-            string codigo = " && "; 
+            string codigo = "a = a;";
+
             codigo = AdicionaEspacoNoFinalCasoNecessario(codigo);
             string lexema = "";
 
@@ -68,9 +69,19 @@ namespace Compilador.Dominio
                 {
                     lexema += codigo[i];
                 }
-                else if (operadoresLogicos.Contains(codigo[i].ToString()))
+                else if (VerificarExistenciaOperadorLogico(codigo[i].ToString()))
                 {
                     lexema += codigo[i];
+
+                    //adiciona && etc...
+                    string operadorLogico = VerificarOperadorLogico(lexema);
+                    if (lexema.Equals(operadorLogico))
+                    {
+                        GeradorItemsLexicos novoItem = new GeradorItemsLexicos(lexema, lexema, "Operador Lógico");
+                        lexemaTokenSimbolo.Add(novoItem);
+                        lexema = "";
+
+                    }
                 }
                 else
                 {
@@ -108,6 +119,8 @@ namespace Compilador.Dominio
                         GeradorItemsLexicos novoItem = new GeradorItemsLexicos(lexema, "NUM_INT, " + lexema, "Numero inteiro");
                         lexemaTokenSimbolo.Add(novoItem);
                     }
+                        
+                    
 
                     //adicionar no simbolo especial
                     if (simbolo != null)
@@ -116,14 +129,10 @@ namespace Compilador.Dominio
                         lexemaTokenSimbolo.Add(novoItem);
                     }
 
-                    string operadorLogico = VerificarOperadorLogico(lexema);
-                    if (lexema.Equals(operadorLogico))
-                    {
-                        GeradorItemsLexicos novoItem = new GeradorItemsLexicos(lexema, lexema, "Operador Lógico");
-                        lexemaTokenSimbolo.Add(novoItem);
-                    }
 
+                    
 
+                    //adiciona =
                     if (codigo[i] == operadorAtribuicao)
                     {
                         GeradorItemsLexicos novoItem = new GeradorItemsLexicos(operadorAtribuicao.ToString(), operadorAtribuicao.ToString(), "Operador de Atribuição");
@@ -132,6 +141,7 @@ namespace Compilador.Dominio
 
                     string operadorAritimetico = VerificarOperadorAritimetico(codigo[i].ToString());
 
+                    //adiciona + - etc...
                     if (codigo[i].ToString() == operadorAritimetico)
                     {
                         GeradorItemsLexicos novoItem = new GeradorItemsLexicos(codigo[i].ToString(), codigo[i].ToString(), "Operador Aritmético");
@@ -145,8 +155,24 @@ namespace Compilador.Dominio
             return lexemaTokenSimbolo;
         }
 
+        private bool VerificarExistenciaOperadorLogico(string operador)
+        {
+            foreach(var op in operadoresLogicos)
+            {
+                if (op.Contains(operador))
+                {
+                    return true;
+                }
+
+            }
+
+            return false;
+        }
+
         private string VerificarOperadorLogico(string operador)
         {
+            //&&x
+
             foreach (var op in operadoresLogicos)
             {
                 if (op.Equals(operador))
