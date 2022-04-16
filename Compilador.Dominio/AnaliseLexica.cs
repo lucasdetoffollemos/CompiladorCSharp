@@ -43,41 +43,50 @@ namespace Compilador.Dominio
 
         public static List<string> operadoresComparacao = new List<string>() { ">", ">=", "<=", "<", "!=", "==" };
 
+        public static int contadorTabelaSimbolos = 1;
 
-        public List<GeradorItemsLexicos> Analisador()
+
+        public List<GeradorItemsLexicos> Analisador(List<char> codigoChar)
         {
-            string codigo = "void main(){ int x, y; y = 3; x = y + 10; println(z); }";
-
-           //string codigo = "void main(){ int x, y; y = 3; 5x = y + 10 println(x); }";
+            //string codigo = "void main(){int x, y; y = 3; x = y + 10; println(z);}";
 
 
-            codigo = AdicionaEspacoNoFinalCasoNecessario(codigo);
+            //char[] codigoChar = codigo.ToCh;
+
+            //List<char> codigoChar = new List<char>() {'"', 'a', 'r', 'r', 'o', 'z', '"'};
+
+            codigoChar = AdicionaEspacoNoFinalCasoNecessario(codigoChar);
+
+            //string codigo = "void main(){ int x, y; y = 3; 5x = y + 10 println(x); }";
+
+
+
 
             string lexema = "";
 
             List<GeradorItemsLexicos> lexemaTokenSimbolo = new List<GeradorItemsLexicos>();
 
-            int contadorTabelaSimbolos = 1;
+            
 
-            for (int i = 0; i < codigo.Length; i++)
+            for (int i = 0; i < codigoChar.Count; i++)
             {
                 
-                if (Char.IsLetter(codigo[i]))
+                if (Char.IsLetter(codigoChar[i]))
                 {
-                    lexema += codigo[i];
+                    lexema += codigoChar[i];
                 }
                 
-                else if (Char.IsDigit(codigo[i]))
+                else if (Char.IsDigit(codigoChar[i]))
                 {
-                    lexema+=codigo[i];
+                    lexema+= codigoChar[i];
                 }
-                else if (codigo[i] == '.')
+                else if (codigoChar[i] == '.')
                 {
-                    lexema += codigo[i];
+                    lexema += codigoChar[i];
                 }
-                else if (VerificarExistenciaOperadorLogico(codigo[i].ToString()) && codigo[i] == '!' && codigo[i + 1] != '=')
+                else if (VerificarExistenciaOperadorLogico(codigoChar[i].ToString()) && codigoChar[i] == '!' && codigoChar[i + 1] != '=')
                 {
-                    lexema += codigo[i];
+                    lexema += codigoChar[i];
 
                     
                     //adiciona && etc...
@@ -102,7 +111,7 @@ namespace Compilador.Dominio
                         lexema = "";
                     }
 
-                    string simbolo = VerificarSimboloEspecial(codigo[i].ToString());
+                    string simbolo = VerificarSimboloEspecial(codigoChar[i].ToString());
 
                     //adciona identificador
                     if ((lexema != "") && (lexema != simbolo))
@@ -130,17 +139,18 @@ namespace Compilador.Dominio
                     //adicionar no simbolo especial
                     if (simbolo != null)
                     {
+
                         GeradorItemsLexicos novoItem = new GeradorItemsLexicos(simbolo, simbolo, "símbolo especial");
                         lexemaTokenSimbolo.Add(novoItem);
                     }
 
 
-                    if (VerificaExistenciaCaracterComparacao(codigo[i]))
+                    if (VerificaExistenciaCaracterComparacao(codigoChar[i]))
                     {
 
-                        if (codigo[i + 1] == '=')
+                        if (codigoChar[i + 1] == '=')
                         {
-                            string operadorComparacao = codigo[i] + "" + codigo[i + 1];
+                            string operadorComparacao = codigoChar[i] + "" + codigoChar[i + 1];
 
                             string comp = VerificaOperadorComparcao(operadorComparacao);
 
@@ -152,22 +162,22 @@ namespace Compilador.Dominio
                         }
                         else
                         {
-                            GeradorItemsLexicos novoItem = new GeradorItemsLexicos(codigo[i].ToString(), "COMP", "Operador comparação");
+                            GeradorItemsLexicos novoItem = new GeradorItemsLexicos(codigoChar[i].ToString(), "COMP", "Operador comparação");
                             lexemaTokenSimbolo.Add(novoItem);
                         }
                     }
 
-                    if (codigo[i] == operadorAtribuicao)
+                    if (codigoChar[i] == operadorAtribuicao)
                     {
                         //adiciona ==
-                        if(codigo[i+1] == operadorAtribuicao)
+                        if(codigoChar[i+1] == operadorAtribuicao)
                         {
                             GeradorItemsLexicos novoItem = new GeradorItemsLexicos("==", "COMP", "Operador comparação");
                             lexemaTokenSimbolo.Add(novoItem);
                         }
 
                         //adiciona =
-                        else if(codigo[i-1] != operadorAtribuicao && !VerificaExistenciaCaracterComparacao(codigo[i - 1]))
+                        else if(codigoChar[i-1] != operadorAtribuicao && !VerificaExistenciaCaracterComparacao(codigoChar[i - 1]))
                         {
                             GeradorItemsLexicos novoItem = new GeradorItemsLexicos(operadorAtribuicao.ToString(), operadorAtribuicao.ToString(), "Operador de Atribuição");
                             lexemaTokenSimbolo.Add(novoItem);
@@ -175,22 +185,77 @@ namespace Compilador.Dominio
                         
                     }
 
-                    
-
-                    string operadorAritimetico = VerificarOperadorAritimetico(codigo[i].ToString());
-
-                    //adiciona + - etc...
-                    if (codigo[i].ToString() == operadorAritimetico)
+                    if (codigoChar[i] == '"')
                     {
-                        GeradorItemsLexicos novoItem = new GeradorItemsLexicos(codigo[i].ToString(), codigo[i].ToString(), "Operador Aritmético");
+                        RealizaTexto(ref i, codigoChar, lexema);
+                        GeradorItemsLexicos novoItem = new GeradorItemsLexicos("txt", "Texto ", "Constantes de texto");
                         lexemaTokenSimbolo.Add(novoItem);
                     }
+
+                    string operadorAritimetico = VerificarOperadorAritimetico(codigoChar[i].ToString());
+
+                    //adiciona + - etc...
+                    if (codigoChar[i].ToString() == operadorAritimetico)
+                    {
+                        //adiciona comentário
+                        if (codigoChar[i] == '/' && codigoChar[i + 1] == '/')
+                        {
+                            GeradorItemsLexicos novoItem = new GeradorItemsLexicos("//", " ", "Comentário");
+                            lexemaTokenSimbolo.Add(novoItem);
+                            RealizaComentario(ref i, codigoChar, lexema);
+
+                        }
+                        //adiciona operador aritimético /
+                        else if(codigoChar[i] == '/' && codigoChar[i-1] != '/')
+                        {
+                            GeradorItemsLexicos novoItem = new GeradorItemsLexicos(codigoChar[i].ToString(), codigoChar[i].ToString(), "Operador Aritmético");
+                            lexemaTokenSimbolo.Add(novoItem);
+                        }
+                        //adiciona operador aritimético diferente de barra
+                        else if(codigoChar[i] != '/')
+                        {
+                            GeradorItemsLexicos novoItem = new GeradorItemsLexicos(codigoChar[i].ToString(), codigoChar[i].ToString(), "Operador Aritmético");
+                            lexemaTokenSimbolo.Add(novoItem);
+                        }
+                        
+                    }
+
+
+                    
 
                     lexema = "";
                 }
             }
 
             return lexemaTokenSimbolo;
+        }
+
+        private void RealizaTexto(ref int i, List<char> codigoChar, string lexema)
+        {
+            i = i + 1;
+
+            while (i < codigoChar.Count)
+            {
+                lexema += "";
+
+                if(codigoChar[i] == '"')
+                {
+                    break;
+                }
+
+                i++;
+            }
+        }
+
+        private void RealizaComentario(ref int i, List<char> codigoChar, string lexema)
+        {
+            i = i + 2;
+            while(i < codigoChar.Count)
+            {
+                lexema += "";
+                
+                i++;
+            }
         }
 
         private bool VerificaExistenciaCaracterComparacao(char op)
@@ -267,14 +332,16 @@ namespace Compilador.Dominio
             return null;
         }
 
-        private string AdicionaEspacoNoFinalCasoNecessario(string codigo)
+        private List<char> AdicionaEspacoNoFinalCasoNecessario(List<char> codigoChar)
         {
-            if(codigo[codigo.Length-1] != ' ')
+            int i = codigoChar[codigoChar.Count - 1];
+
+            if ( i != ' ')
             {
-                codigo += " ";
+                codigoChar.Add(' ');
             }
 
-            return codigo;
+            return codigoChar;
         }
 
         private void AdicionaNaTabelaDeSimbolos(string lexema, ref int contadorTabelaSimbolos, List<GeradorItemsLexicos> lexemaTokenSimbolo)
