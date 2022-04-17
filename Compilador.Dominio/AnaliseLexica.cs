@@ -48,25 +48,11 @@ namespace Compilador.Dominio
 
         public List<GeradorItemsLexicos> Analisador(List<char> codigoChar)
         {
-            //string codigo = "void main(){int x, y; y = 3; x = y + 10; println(z);}";
-
-
-            //char[] codigoChar = codigo.ToCh;
-
-            //List<char> codigoChar = new List<char>() {'"', 'a', 'r', 'r', 'o', 'z', '"'};
-
             codigoChar = AdicionaEspacoNoFinalCasoNecessario(codigoChar);
-
-            //string codigo = "void main(){ int x, y; y = 3; 5x = y + 10 println(x); }";
-
-
-
 
             string lexema = "";
 
             List<GeradorItemsLexicos> lexemaTokenSimbolo = new List<GeradorItemsLexicos>();
-
-            
 
             for (int i = 0; i < codigoChar.Count; i++)
             {
@@ -75,7 +61,6 @@ namespace Compilador.Dominio
                 {
                     lexema += codigoChar[i];
                 }
-                
                 else if (Char.IsDigit(codigoChar[i]))
                 {
                     lexema+= codigoChar[i];
@@ -88,7 +73,6 @@ namespace Compilador.Dominio
                 {
                     lexema += codigoChar[i];
 
-                    
                     //adiciona && etc...
                     string operadorLogico = VerificarOperadorLogico(lexema);
                     if (lexema.Equals(operadorLogico))
@@ -147,7 +131,7 @@ namespace Compilador.Dominio
 
                     if (VerificaExistenciaCaracterComparacao(codigoChar[i]))
                     {
-
+                        //adiciona <= >= etc
                         if (codigoChar[i + 1] == '=')
                         {
                             string operadorComparacao = codigoChar[i] + "" + codigoChar[i + 1];
@@ -160,6 +144,7 @@ namespace Compilador.Dominio
 
                             continue;
                         }
+                        //adiciona > < etc...
                         else
                         {
                             GeradorItemsLexicos novoItem = new GeradorItemsLexicos(codigoChar[i].ToString(), "COMP", "Operador comparação");
@@ -185,6 +170,7 @@ namespace Compilador.Dominio
                         
                     }
 
+                    //adiciona textos
                     if (codigoChar[i] == '"')
                     {
                         RealizaTexto(ref i, codigoChar, lexema);
@@ -220,9 +206,6 @@ namespace Compilador.Dominio
                         
                     }
 
-
-                    
-
                     lexema = "";
                 }
             }
@@ -239,6 +222,11 @@ namespace Compilador.Dominio
                 lexema += "";
 
                 if(codigoChar[i] == '"')
+                {
+                    break;
+                }
+
+                if (i == codigoChar.Count - 1)
                 {
                     break;
                 }
