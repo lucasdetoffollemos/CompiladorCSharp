@@ -69,21 +69,26 @@ namespace Compilador.Dominio
                 {
                     lexema += codigoChar[i];
                 }
-                else if (VerificarExistenciaOperadorLogico(codigoChar[i].ToString()) && codigoChar[i] == '!' && codigoChar[i + 1] != '=')
+                else if (VerificarExistenciaOperadorLogico(codigoChar[i].ToString()) && codigoChar[i] != '!')
                 {
                     lexema += codigoChar[i];
 
-                    //adiciona && etc...
+                    //adiciona && ||
                     string operadorLogico = VerificarOperadorLogico(lexema);
                     if (lexema.Equals(operadorLogico))
-                    { 
+                    {
                         GeradorItemsLexicos novoItem = new GeradorItemsLexicos(lexema, lexema, "Operador Lógico");
                         lexemaTokenSimbolo.Add(novoItem);
                         lexema = "";
-
                     }
                 }
-                
+                else if (codigoChar[i] == '!' && codigoChar[i + 1] != '=')
+                {
+                    //adiciona !
+                    GeradorItemsLexicos novoItem = new GeradorItemsLexicos("!", "!", "Operador Lógico");
+                    lexemaTokenSimbolo.Add(novoItem);
+                    lexema = "";
+                }
                 else
                 {
                     //adicionar no token
@@ -205,6 +210,22 @@ namespace Compilador.Dominio
                         }
                         
                     }
+
+                    if(!string.IsNullOrEmpty(lexema) && (!regexIds.IsMatch(lexema)) && (!regexInt.IsMatch(lexema)) && (!regexDouble.IsMatch(lexema)))
+                    {
+                        if(codigoChar[i] != ' ' && simbolo == null)
+                        {
+                            GeradorItemsLexicos erroItem = new GeradorItemsLexicos(codigoChar[i].ToString(), "ERRO", "ERRO");
+                            lexemaTokenSimbolo.Add(erroItem);
+                        }
+                        else
+                        {
+                            GeradorItemsLexicos erroItem = new GeradorItemsLexicos(lexema, "ERRO", "ERRO");
+                            lexemaTokenSimbolo.Add(erroItem);
+                        }
+                        
+                    }
+                   
 
                     lexema = "";
                 }
