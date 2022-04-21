@@ -2,7 +2,7 @@
 
 
 
-string fileName = @"C:\aquivosParaLer\file.txt";
+string fileName = @"C:\arquivosParaLer\file4.txt";
 
 IEnumerable<string> lines = File.ReadLines(fileName);
 
@@ -11,13 +11,18 @@ List<GeradorItemsLexicos> listAnalisador = new();
 
 foreach (var line in lines)
 {
+    if (string.IsNullOrEmpty(line))
+    {
+        continue;
+    }
+
     List<char> linha = line.ToList();
 
     listAnalisador.AddRange(analisadorLexico.Analisador(linha));
 
 }
 
-//Console.WriteLine(String.Join(Environment.NewLine, lines));
+
 
 
 for (int i = 0; i < listAnalisador.Count; i++)

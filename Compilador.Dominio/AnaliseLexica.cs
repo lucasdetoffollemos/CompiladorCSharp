@@ -126,20 +126,15 @@ namespace Compilador.Dominio
                         lexemaTokenSimbolo.Add(novoItem);
                     }
 
-                    if ((!regexIds.IsMatch(lexema)) && (!regexInt.IsMatch(lexema)) && (!regexDouble.IsMatch(lexema)))
+                    if ((!string.IsNullOrEmpty(lexema)) && (!regexIds.IsMatch(lexema)) && (!regexInt.IsMatch(lexema)) && (!regexDouble.IsMatch(lexema)))
                     {
 
-                        if (!string.IsNullOrEmpty(lexema))
-                        {
+                       
                             GeradorItemsLexicos erroItem = new GeradorItemsLexicos(lexema, "ERRO", "ERRO");
                             lexemaTokenSimbolo.Add(erroItem);
-                        }
+                        
 
                     }
-
-
-
-
 
                     //adicionar no simbolo especial
                     if (simbolo != null)
@@ -226,21 +221,13 @@ namespace Compilador.Dominio
                         }
                     }
 
-                    if((!regexIds.IsMatch(lexema)) && (!regexInt.IsMatch(lexema)) && (!regexDouble.IsMatch(lexema)))
+                    
+                    if (codigoChar[i] != ' ' && codigoChar[i] != '\t' && simbolo == null && operadorAritimetico == null && codigoChar[i] != operadorAtribuicao && codigoChar[i] != '"')
                     {
-
-                        
-
-                        if (codigoChar[i] != ' ' && simbolo == null && operadorAritimetico == null && codigoChar[i] != operadorAtribuicao && codigoChar[i] != '"')
-                        {
-                            GeradorItemsLexicos erroItem = new GeradorItemsLexicos(codigoChar[i].ToString(), "ERRO", "ERRO");
-                            lexemaTokenSimbolo.Add(erroItem);
-                        }
-                        
-                        
-                        
+                        GeradorItemsLexicos erroItem = new GeradorItemsLexicos(codigoChar[i].ToString(), "ERRO", "ERRO");
+                        lexemaTokenSimbolo.Add(erroItem);
                     }
-                   
+                        
 
                     lexema = "";
                 }
@@ -280,6 +267,8 @@ namespace Compilador.Dominio
                 
                 i++;
             }
+
+            i--;
         }
 
         private bool VerificaExistenciaCaracterComparacao(char op)
