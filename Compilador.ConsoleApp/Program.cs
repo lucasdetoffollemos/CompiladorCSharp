@@ -19,7 +19,6 @@ foreach (var line in lines)
     List<char> linha = line.ToList();
 
     listAnalisador.AddRange(analisadorLexico.Analisador(linha));
-
 }
 
 
