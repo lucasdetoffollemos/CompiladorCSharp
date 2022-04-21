@@ -16,7 +16,7 @@ namespace Compilador.Dominio
 
         public static char operadorAtribuicao = '=';
 
-        public static Dictionary<int, string> tabelaDeSimbolos = new Dictionary<int, string>();
+        public  Dictionary<int, string> tabelaDeSimbolos = new Dictionary<int, string>();
 
         public static Dictionary<string, string> palavrasReservadas = new Dictionary<string, string>()
                 {
@@ -43,7 +43,7 @@ namespace Compilador.Dominio
 
         public static List<string> operadoresComparacao = new List<string>() { ">", ">=", "<=", "<", "!=", "==" };
 
-        public static int contadorTabelaSimbolos = 1;
+        public  int contadorTabelaSimbolos = 1;
 
 
         public List<GeradorItemsLexicos> Analisador(List<char> codigoChar)
