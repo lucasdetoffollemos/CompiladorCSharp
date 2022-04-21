@@ -189,9 +189,20 @@ namespace Compilador.Dominio
                     //adiciona textos
                     if (codigoChar[i] == '"')
                     {
-                        RealizaTexto(ref i, codigoChar, lexema);
-                        GeradorItemsLexicos novoItem = new GeradorItemsLexicos("txt", "Texto ", "Constantes de texto");
-                        lexemaTokenSimbolo.Add(novoItem);
+                        string txt = RealizaTexto(ref i, codigoChar, lexema);
+
+                        if (txt == "Texto")
+                        {
+                            GeradorItemsLexicos novoItem = new GeradorItemsLexicos("txt", "Texto ", "Constantes de texto");
+                            lexemaTokenSimbolo.Add(novoItem);
+                        }
+                        else
+                        {
+                            GeradorItemsLexicos novoItem = new GeradorItemsLexicos(txt, "ERRO", "ERRO");
+                            lexemaTokenSimbolo.Add(novoItem);
+                        }
+                            
+                        
                     }
 
                     string operadorAritimetico = VerificarOperadorAritimetico(codigoChar[i].ToString());
@@ -236,7 +247,7 @@ namespace Compilador.Dominio
             return lexemaTokenSimbolo;
         }
 
-        private void RealizaTexto(ref int i, List<char> codigoChar, string lexema)
+        private string RealizaTexto(ref int i, List<char> codigoChar, string lexema)
         {
             i = i + 1;
 
@@ -244,18 +255,21 @@ namespace Compilador.Dominio
             {
                 lexema += "";
 
-                if(codigoChar[i] == '"')
+                if (codigoChar[i] == '"')
                 {
-                    break;
+                    return "Texto";
                 }
 
                 if (i == codigoChar.Count - 1)
                 {
-                    break;
+
+                    return "ERRO_TEXTO";
                 }
 
                 i++;
             }
+
+            return null;
         }
 
         private void RealizaComentario(ref int i, List<char> codigoChar, string lexema)
