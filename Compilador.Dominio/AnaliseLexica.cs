@@ -222,7 +222,7 @@ namespace Compilador.Dominio
                     }
 
                     
-                    if (codigoChar[i] != ' ' && codigoChar[i] != '\t' && simbolo == null && operadorAritimetico == null && codigoChar[i] != operadorAtribuicao && codigoChar[i] != '"')
+                    if (codigoChar[i] != ' ' && codigoChar[i] != '\t' && simbolo == null && operadorAritimetico == null && codigoChar[i] != operadorAtribuicao && codigoChar[i] != '"'&& !operadoresComparacao.Contains(codigoChar[i].ToString()))
                     {
                         GeradorItemsLexicos erroItem = new GeradorItemsLexicos(codigoChar[i].ToString(), "ERRO", "ERRO");
                         lexemaTokenSimbolo.Add(erroItem);

@@ -2,7 +2,7 @@
 
 
 
-string fileName = @"C:\arquivosParaLer\file4.txt";
+string fileName = @"C:\arquivosParaLer\file3.txt";
 
 IEnumerable<string> lines = File.ReadLines(fileName);
 
