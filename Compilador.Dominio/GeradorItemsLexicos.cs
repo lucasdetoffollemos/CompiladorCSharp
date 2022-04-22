@@ -29,9 +29,9 @@ namespace Compilador.Dominio
             this.Simbolo = simbolo;
         }
 
-        public override string? ToString()
+        public override string ToString()
         {
-            return ($"Lexema: {Lexema}\t\tToken: {Token}\t\tSímbolo: {Simbolo}");
+            return ($@"{Lexema}\{Token}\{Simbolo}");
         }
 
 

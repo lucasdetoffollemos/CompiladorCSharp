@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Compilador.Dominio;
 
 namespace Compilador.WebApp.Controllers
 {
