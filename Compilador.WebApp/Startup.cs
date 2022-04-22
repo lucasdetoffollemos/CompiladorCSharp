@@ -50,7 +50,7 @@ namespace Compilador.WebApp
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Analisador}/{action=Index}/{id?}");
             });
         }
     }

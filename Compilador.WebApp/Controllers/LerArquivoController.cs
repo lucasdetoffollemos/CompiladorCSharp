@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Compilador.Dominio;
+using Compilador.WebApp.Models;
 
 namespace Compilador.WebApp.Controllers
 {
@@ -16,24 +17,19 @@ namespace Compilador.WebApp.Controllers
             Environment = _environment;
         }
 
-        public IActionResult LerCodigo()
+        public IActionResult LerCodigo(FileViewModel file)
         {
             AnaliseLexica analisadorLexico = new AnaliseLexica();
 
-            StreamWriter sw;
+            string caminhoCodigo2 = file.FileFullPath;
 
-
-            string caminhoListaTokens = Environment.WebRootPath + @"\~\Uploads\listaTokens.txt";
-
-            string caminhoCodigo = Environment.WebRootPath + @"\~\Uploads\codigo.txt";
-
-            if (!System.IO.File.Exists(caminhoCodigo))
+            if (!System.IO.File.Exists(caminhoCodigo2))
             {
                 ViewBag.Data = string.Empty;
                 return View();
             }
 
-            IEnumerable<string> lines = System.IO.File.ReadLines(caminhoCodigo);
+            IEnumerable<string> lines = System.IO.File.ReadLines(caminhoCodigo2);
 
             List<GeradorItemsLexicos> listAnalisador = new();
 
@@ -50,16 +46,16 @@ namespace Compilador.WebApp.Controllers
 
             }
 
-            sw = System.IO.File.CreateText(caminhoListaTokens);
+            List<string> textsList = new List<string>();
 
             for (int i = 0; i < listAnalisador.Count; i++)
             {
-                sw.WriteLine(listAnalisador[i]);
+                
+                textsList.Add(listAnalisador[i].ToString());
             }
 
-            sw.Close();
+            string [] texts = textsList.ToArray();
 
-            string[] texts = System.IO.File.ReadAllLines(caminhoListaTokens);
             ViewBag.Data = texts;
             return View();
 
